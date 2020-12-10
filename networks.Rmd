@@ -1,0 +1,186 @@
+---
+title: "networks"
+author: "Kuiyu Zhu"
+date: "11/5/2020"
+output: html_document
+---
+
+```{r, message=FALSE, warning=FALSE}
+# set up python env
+library(reticulate)
+use_python('/Library/Frameworks/Python.framework/Versions/3.7/bin/python3')
+```
+
+```{python}
+# read in data from excel file via powerful python package - "xlrd"
+import xlrd
+import pandas as pd
+data = xlrd.open_workbook('State_to_State_Migrations_Table_2018.xls')
+data = data.sheet_by_index(0)
+```
+
+
+###### 4 origin states I choose  - New York, Texas, Arizona, Iowa  
+
+```{python}
+# states list
+index_list = list(range(11,76))
+remove_list = [16,22,28,34,40,43,44,45,46,47,53,59,65,71]
+for value in remove_list:
+  index_list.remove(value)
+```
+
+
+```{python}
+# states names list
+state_name_list = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+print(index_list)
+```
+
+
+```{python}
+# New York (80)
+# population list which contains the number of people move out from New York State to other states
+ny_pop_list = []
+for index in index_list:
+  ny_pop_list.append(data.cell_value(index, 80))
+# replace NA with 0 (move from New York state to itself)
+for n, i in enumerate(ny_pop_list):
+        if i == 'N/A':
+            ny_pop_list[n] = 0.0
+print(ny_pop_list)
+```
+
+```{python}
+# make a dictionary
+ny_dic = dict(zip(state_name_list, ny_pop_list))
+print(ny_dic)
+```
+
+```{python}
+# sort the dictionary to get top 10 states which people move to
+ny_sorted_dic = {k: v for k, v in sorted(ny_dic.items(), key=lambda item: item[1], reverse=True)}
+# top 10 records
+ny_top10_dic = {k: ny_sorted_dic[k] for k in list(ny_sorted_dic)[:10]}
+print(ny_top10_dic)
+```
+
+```{python}
+# create the dataframe
+ny_df = pd.DataFrame(list(ny_top10_dic.items()), columns = ['target','count'])
+ny_df['count'] = ny_df['count'].astype(int) # change float type to int 
+ny_df['source'] = 'New York' # create 'source' column
+ny_df = ny_df[['source', 'target', 'count']] # reorder columns
+print(ny_df)
+```
+
+```{python}
+# repeat the above step to generate the dataframe of Texas(104), Iowa(42) and Arizona(14)
+# build a function
+def dfGenerator(name, n):
+    pop_list = []
+    for index in index_list:
+        pop_list.append(data.cell_value(index, n))
+    # deal with NA
+    for n, i in enumerate(pop_list):
+        if i == 'N/A':
+            pop_list[n] = 0.0
+    dic = dict(zip(state_name_list, pop_list))
+    sorted_dic = {k: v for k, v in sorted(dic.items(), key=lambda item: item[1], reverse=True)}
+    top10_dic = {k: sorted_dic[k] for k in list(sorted_dic)[:10]}
+    # create df
+    df = pd.DataFrame(list(top10_dic.items()), columns = ['target','count'])
+    df['count'] = df['count'].astype(int) 
+    df['source'] = name 
+    df = df[['source', 'target', 'count']]
+    return df
+```
+
+
+```{python}
+# df of Texas(104)
+tx_df = dfGenerator(name='Texas', n=104)
+print(tx_df)
+```
+
+```{python}
+# df of Arizona(14)
+az_df = dfGenerator(name='Arizona', n=14)
+print(az_df)
+```
+
+```{python}
+# df of Iowa(42)
+ia_df = dfGenerator(name='Iowa', n=42)
+print(ia_df)
+```
+
+```{python}
+# concat these 4 dfs
+df=pd.concat([ny_df,tx_df,az_df,ia_df],sort=False).reset_index(drop=True)
+print(df)
+```
+
+```{r}
+# transfer data to r env
+flow = py$df
+flow$count = ((flow$count - min(flow$count)) / (max(flow$count) - min(flow$count))) / 2 # convert for visualization
+flow
+```
+
+```{r, message=FALSE, warning=FALSE}
+# start to plot 
+library(tidygraph)
+graph_flow <- as_tbl_graph(flow)
+graph_flow
+```
+
+```{r}
+library(stringr)
+graph_flow <- graph_flow %>%
+  activate(nodes) %>%
+  mutate(
+    title = str_to_title(name),
+    label = str_replace_all(title, " ", "\n")
+    )
+
+graph_flow
+```
+
+```{r}
+# check states name
+states <- graph_flow %>%
+  activate(nodes) %>%
+  pull(title)
+
+states
+```
+
+
+```{r}
+# visualization
+library(ggplot2)
+library(ggraph)
+
+# set theme
+thm <- theme_minimal() +
+  theme(
+    legend.position = "none",
+     axis.title = element_blank(),
+     axis.text = element_blank(),
+     panel.grid = element_blank(),
+     panel.grid.major = element_blank(),
+  ) 
+
+theme_set(thm)
+
+# finishing plot
+graph_flow %>%
+  ggraph(layout = 'kk') +
+    geom_edge_diagonal(aes(colour = factor(from), width = count), alpha=0.4, arrow = arrow(angle = 10, length = unit(3, "mm"), ends = "last", type = "open")) +
+    geom_node_text(aes(label = label, color = name, fontface='bold'), size = 3.8) +
+    labs(title = 'States to States Migrations in 2018')
+```
+
+
+
