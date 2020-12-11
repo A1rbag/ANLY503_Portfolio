@@ -1,0 +1,409 @@
+---
+title: "Bank Analysis"
+author: "Kuiyu Zhu"
+date: "10/23/2020"
+output: html_document
+---
+
+### Task1
+1. Whether an account has a credit card or not  
+2. Whether an account has a loan or not  
+3. The average balance for the account  
+Embed the 3 features mentioned in ONE graph.  
+
+```{r, message=FALSE, warning=FALSE}
+# set up python env
+library(reticulate)
+use_python('/Library/Frameworks/Python.framework/Versions/3.7/bin/python3')
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# import libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style("dark")
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+```{python, message=FALSE, warning=FALSE}
+# load in data
+acct = pd.read_csv('data/accounts_analytical.csv')
+# create average_balance column
+acct['aver_balance'] = acct['min_balance']/2 + acct['max_balance']/2
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# average balance for accounts which have credit cards
+b1 = np.mean(acct['aver_balance'][acct['credit_cards'] >=1])
+# average balance for accounts which do not have credit cards
+acct['credit_cards'] = acct['credit_cards'].fillna(0)
+b2 = np.mean(acct['aver_balance'][acct['credit_cards'] == 0])
+acct['loan_amount'] = acct['loan_amount'].fillna(0)
+# average balance for accounts which have a loan
+b3 = np.mean(acct['aver_balance'][acct['loan_amount'] !=0])
+# average balance for accounts which do not have a loan
+b4 = np.mean(acct['aver_balance'][acct['loan_amount'] ==0])
+```
+
+```{python, message=FALSE, warning=FALSE}
+x = ['have cc', 'have no cc', 'have loan', 'have no loan']
+y = [b1, b2, b3, b4]
+
+fig, ax = plt.subplots()
+width = 0.5 # the width of the bars 
+ind = np.arange(len(y))  # the x locations for the groups
+ax.barh(ind, y, width, color="green")
+ax.set_yticks(ind+width/6)
+ax.set_yticklabels(x, minor=False)
+plt.title('Average Balance Bar Plot')
+for i, v in enumerate(y):
+    ax.text(v + 2.5, i + .03, str(round(v,2)), color='black', fontweight='bold')
+plt.show()
+```
+
+
+### Task2
+
+What is the distribution of all loans and what are their characteristics?  
+
+
+```{python, message=FALSE, warning=FALSE}
+# load in data
+acct = pd.read_csv('data/accounts_analytical.csv')
+# create loan dataset
+loan = acct[['loan_date', 'loan_amount', 'loan_payment', 'loan_term', 'loan_status', 'loan_default']]
+loan = loan.dropna()
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# plot distrubution of loan amount
+fig = plt.figure(figsize=(8,6))
+g = sns.distplot(loan['loan_amount'], bins=20, kde=False)
+plt.title('Distribution of Loan Amount')
+plt.xlabel('Loan Amount')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python, message=FALSE, warning=FALSE}
+# plot distribution of loan payment
+fig = plt.figure(figsize=(8,6))
+g = sns.distplot(loan['loan_payment'], bins=20, kde=False)
+plt.title('Distribution of Loan Payment')
+plt.xlabel('Loan Payment')
+plt.ylabel('Count')
+plt.show()
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# plot loan term
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(loan['loan_term'])
+g.set_title('Count of Loan Term')
+for p in g.patches:
+    g.annotate(str(format(int(p.get_height()), ',d')), (p.get_x()+0.3, p.get_height()*1.01))
+plt.xlabel('Loan Term')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python, message=FALSE, warning=FALSE}
+# plot loan status
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(loan['loan_status'])
+g.set_title('Count of Loan Status')
+for p in g.patches:
+    g.annotate(str(format(int(p.get_height()), ',d')), (p.get_x()+0.37, p.get_height()*1.01))
+plt.xlabel('Loan Status')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python, message=FALSE, warning=FALSE}
+# plot loan default
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(loan['loan_default'])
+g.set_title('Count of Loan Default')
+for p in g.patches:
+    g.annotate(str(format(int(p.get_height()), ',d')), (p.get_x()+0.37, p.get_height()*1.01))
+plt.xlabel('Loan Default')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python, message=FALSE, warning=FALSE}
+# plot loan term based on loan status
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(x = 'loan_term', hue='loan_status', data=loan)
+g.set_title('Count of Loan Term Based on Loan Status')
+for p in g.patches:
+    g.annotate(str(format(int(p.get_height()), ',d')), (p.get_x()+0.12, p.get_height()*1.01))
+plt.xlabel('Loan Term')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python, message=FALSE, warning=FALSE}
+# plot loan term based on whether it is defaulted
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(x = 'loan_term', hue='loan_default', data=loan)
+g.set_title('Count of Loan Term if it is defaulted')
+for p in g.patches:
+    g.annotate(str(format(int(p.get_height()), ',d')), (p.get_x()+0.12, p.get_height()*1.01))
+plt.xlabel('Loan Term')
+plt.ylabel('Count')
+plt.show()
+```
+
+### Task3
+
+Is there a relationship between a good or bad loan and the time an account is opened?  
+Is there a relationship between a good or bad loan and the time the loan is created?  
+Is there a specific set of accounts that seem to be at higher or lower risk of defaulting?  
+
+
+```{python, message=FALSE, warning=FALSE}
+# load in data
+acct = pd.read_csv('data/accounts_analytical.csv')
+# create loan dataset
+loan = acct[['acct_creation_date', 'loan_date', 'loan_amount', 'loan_payment', 'loan_term', 'loan_status', 'loan_default']]
+loan = loan.dropna()
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# split "acct_creation_date"
+loan['acct_year'] = pd.DatetimeIndex(loan['acct_creation_date']).year
+loan['acct_month'] = pd.DatetimeIndex(loan['acct_creation_date']).month
+loan['acct_day'] = pd.DatetimeIndex(loan['acct_creation_date']).day
+# drop "acct_creation_date"
+del loan['acct_creation_date']
+# split "loan_date"
+loan['loan_year'] = pd.DatetimeIndex(loan['loan_date']).year
+loan['loan_month'] = pd.DatetimeIndex(loan['loan_date']).month
+loan['loan_day'] = pd.DatetimeIndex(loan['loan_date']).day
+# drop "loan_date"
+del loan['loan_date']
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# Is there a relationship between a good or bad loan and the time an account is opened? 
+# define whether a loan is good/bad - status/default
+loan1 = loan[['loan_status', 'loan_default', 'acct_year', 'acct_month', 'acct_day', 'loan_year', 'loan_month', 'loan_day']]
+# encoding loan_status, loan_default
+loan1['loan_status'] = loan1['loan_status'].map({'current': 0, 'expired': 1})
+loan1['loan_default'] = loan1['loan_default'].map({False: 0, True: 1})
+# heatmap of correlation
+mask = np.triu(np.ones_like(loan1.corr(), dtype=bool))
+heatmap = sns.heatmap(loan1.corr(), mask = mask, vmin=-1, vmax=1, annot=True, cmap='BrBG')
+heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
+heatmap
+```
+
+
+It seems that there are relationships between loan_status and loan_year & acct_year.  
+It seems that there is no any strong relationship between loan_default and others.  
+Lets explore the relationships between loan_status and loan_year & acct_year.  
+
+```{python, message=FALSE, warning=FALSE}
+loan1['loan_status'] = loan1['loan_status'].map({0:'current', 1:'expired'})
+# loan_status & loan_year
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(x = 'loan_status', hue='loan_year', data=loan1)
+g.set_title('Count of Loan Status Based on Year when the Loan Created ')
+plt.xlabel('Loan Status')
+plt.ylabel('Count')
+plt.show()
+```
+
+Conclusion: Loans Created in 1994 are most likely to be expired, and loans created in 1998 are less likely to be expired.  
+
+```{python, message=FALSE, warning=FALSE}
+# loan_status & acct_year
+fig = plt.figure(figsize=(8,6))
+g = sns.countplot(x = 'loan_status', hue='acct_year', data=loan1)
+g.set_title('Count of Loan Status Based on Year when the Account Opened')
+plt.xlabel('Loan Status')
+plt.ylabel('Count')
+plt.show()
+```
+
+Conclusion: Loans, associated with the account opened in 1993 are most likely to be expired, and loans, associated with the account opened in 1997 are less likely to be expired.  
+
+
+```{r, message=FALSE, warning=FALSE}
+acct = read.csv('data/accounts_analytical.csv', header = TRUE)
+# Omit rows containing specific column (loan_default) of NA
+completeFun <- function(data, desiredCols) {
+  completeVec <- complete.cases(data[, desiredCols])
+  return(data[completeVec, ])
+}
+loan2 <- completeFun(acct, 'loan_default')
+# export new data
+write.csv(loan2, 'data/loan2.csv')
+```
+
+```{python, message=FALSE, warning=FALSE}
+# ignore some columns (features)
+loan2 = pd.read_csv('data/loan2.csv')
+loan2 = loan2[['statement_frequency', 'num_customers', 'credit_cards', 'max_withdrawal', 'min_withdrawal',
+'max_balance', 'min_balance', 'pmt_order_ct', 'pmt_order_avg_amt', 'gender', 'birth_date', 'loan_default']]
+loan2.info()
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+# data cleaning
+# fill NA with 0
+loan2 = loan2.fillna(0)
+# encoding
+loan2['statement_frequency'] = loan2['statement_frequency'].map({'monthly': 0, 'weekly': 1, 'after every transaction': 2})
+loan2['gender'] = loan2['gender'].map({'F': 0, 'M': 1})
+# transfer birth_date to age
+loan2['birth_year'] = pd.DatetimeIndex(loan2['birth_date']).year
+loan2['age'] = loan2['birth_year'].map(lambda x: 2020 - x)
+del loan2['birth_year']
+del loan2['birth_date']
+# bool target to int
+loan2['loan_default'] = loan2['loan_default'].map({False: 0, True: 1})
+```
+
+```{python, message=FALSE, warning=FALSE}
+# heatmap of correlation
+fig = plt.figure(figsize=(10,10))
+mask = np.triu(np.ones_like(loan2.corr(), dtype=bool))
+heatmap = sns.heatmap(loan2.corr(), mask = mask, vmin=-1, vmax=1, annot=True, cmap='BrBG')
+heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
+heatmap
+```
+
+It seems that there are strong relationships between loan_default and min_balance & min_withdrawal.  
+
+```{python, message=FALSE, warning=FALSE}
+loan2['loan_default'] = loan2['loan_default'].map({0: False, 1:True})
+# plot loan_default with min_balance
+fig = plt.figure(figsize=(10,10))
+g = sns.catplot(x="loan_default", y="min_balance", data=loan2)
+plt.show()
+```
+
+The result is quite straight forward. If the minimum balance of an account is less than 0, its loan will definitely be default.     
+```{python, message=FALSE, warning=FALSE}
+# plot loan_default with min_withdrawal
+fig = plt.figure(figsize=(10,10))
+g = sns.catplot(x="loan_default", y="min_withdrawal", data=loan2)
+plt.show()
+```
+
+The result is also very clear. If the minimum withdrawal is approaching to 0, then the loan is likely to be defaulted.  
+
+### Task4
+
+For the account with the highest number of transacations, make a time series line plot for the behavior of the account over time, including all debits and credits, the different methods, and the different categories.  
+
+
+```{python, message=FALSE, warning=FALSE}
+# load in data
+tran = pd.read_csv('data/transactions.csv')
+tran.info()
+```
+
+
+```{python, message=FALSE, warning=FALSE}
+data = tran[tran['account_id'] == 8261]
+data = data.drop(['id', 'account_id', 'bank', 'account','amount' ], axis=1)
+#data = data.set_index('date')
+tran = data
+data = data.dropna()
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+library(plotly)
+tran = py$tran
+data = py$data
+
+# plot
+fig1 <- plot_ly(tran, x = ~date, y = ~balance, color= ~type, type = 'scatter', mode = 'lines')
+
+fig1 <- fig1 %>%  layout(title = 'Time Series Plot of Balance of Diff Types', 
+                       yaxis = list(title = 'Balance'), 
+                       xaxis = list(title = 'date'))
+                       
+fig1
+```
+
+```{r, message=FALSE, warning=FALSE}
+fig2 <- plot_ly(data, x = ~date, y = ~balance, color= ~method, type = 'scatter', mode = 'lines')
+
+fig2 <- fig2 %>%  layout(title = 'Time Series Plot of Balance of Diff Methods', 
+                       yaxis = list(title = 'Balance'), 
+                       xaxis = list(title = 'date'))
+                       
+fig2
+```
+
+```{r, message=FALSE, warning=FALSE}
+fig3 <- plot_ly(data, x = ~date, y = ~balance, color= ~category, type = 'scatter', mode = 'lines')
+
+fig3 <- fig3 %>%  layout(title = 'Time Series Plot of Balance of Diff Category', 
+                       yaxis = list(title = 'Balance'), 
+                       xaxis = list(title = 'date'))
+                       
+fig3
+```
+
+
+### Task5
+
+Explore the validity of the data for the case whether or not an account has a credit card and whether or not they have associated credit card transactions. Is there anything worth noting?  
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+# load data sets
+acct = read.csv('data/accounts_analytical.csv', header = TRUE)
+tran = read.csv('data/transactions.csv', header = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# list of account ids which have credit card transactions
+list_id <- c(tran$account_id[tran$method == 'credit card'])
+list_id <- unique(list_id)
+length(list_id)
+# list of account ids which have at least one credit card
+list_ID <- c(acct$account_id[acct$credit_cards >= 1])
+list_ID <- unique(list_ID)
+length(list_ID)
+# common - list of account id which has at least one credit card and also does credit card transaction.
+common = intersect(list_id, list_ID)
+length(common)
+```
+
+
+
+```{r, message=FALSE, warning=FALSE}
+x <- c('Num_id_cc_trans', 'Num_id_cc', 'Num_cmn_od')
+y <- c(807, 726, 139)
+data <- data.frame(x,y)
+barplot(data$y,
+        main = 'Barplot of Account Count',
+        xlab = 'class',
+        ylab = 'count',
+        ylim = c(0,1000), 
+        names.arg = c('Num_id_tran', 'Num_id_cc', 'Num_cmn_id'),
+        col = c('yellow','blue', 'green'))
+text(0.7, 840, "807")
+text(1.9, 766, "720")
+text(3.1, 168, '139')
+```
+
+There are 139 accounts which have credit cards and also have credit cards transactions.  
+

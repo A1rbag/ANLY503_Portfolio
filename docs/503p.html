@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kuiyu Zhu" />
+
+<meta name="date" content="2020-11-18" />
+
+<title>Used Cars Data Visualization Project</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<link href="site_libs/wordcloud2-0.0.1/wordcloud.css" rel="stylesheet" />
+<script src="site_libs/wordcloud2-0.0.1/wordcloud2-all.js"></script>
+<script src="site_libs/wordcloud2-0.0.1/hover.js"></script>
+<script src="site_libs/wordcloud2-binding-0.2.2/wordcloud2.js"></script>
+<script src="site_libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DataViz Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="A1.html">Hand Drawing</a>
+</li>
+<li>
+  <a href="BankAnalysis.html">Bank Analysis</a>
+</li>
+<li>
+  <a href="geospatial.html">Geospatial</a>
+</li>
+<li>
+  <a href="networks.html">Network</a>
+</li>
+<li>
+  <a href="503p.html">Final Project</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Used Cars Data Visualization Project</h1>
+<h4 class="author">Kuiyu Zhu</h4>
+<h4 class="date">11/18/2020</h4>
+
+</div>
+
+
+<p><img src="uc.jpeg" /></p>
+<div id="load-and-clean-the-dataset" class="section level3">
+<h3>Load and Clean the Dataset</h3>
+<pre class="r"><code># set up python env
+library(reticulate)
+use_python(&#39;/Library/Frameworks/Python.framework/Versions/3.7/bin/python3&#39;)</code></pre>
+<pre class="python"><code># load the data
+import pandas as pd
+pd.set_option(&#39;display.max_columns&#39;, None)
+cars = pd.read_csv(&#39;used_car.csv&#39;)
+# get to know about the data
+cars.head()</code></pre>
+<pre><code>##    Unnamed: 0  City_MPG  Highway_MPG          City State                vin  \
+## 0           0        17           24  Indianapolis    IN  1GKKRSED1BJ179334   
+## 1           1        19           29       Fishers    IN  2G1WF5EK1B1155818   
+## 2           2        17           24    BeechGrove    IN  WBAEU334X4PM59833   
+## 3           3        19           25       Fishers    IN  JN8AE2KP4E9106731   
+## 4           4        24           25       Fishers    IN  3N6CM0KN7DK693736   
+## 
+##    price body_style drive_type         engine    ext_color           fuel  \
+## 0  14995        SUV        FWD  [&#39;6&#39;, &#39;3.6L&#39;]  Unspecified       Gasoline   
+## 1   7894      Sedan        FWD  [&#39;6&#39;, &#39;3.5L&#39;]        White  Flexible-Fuel   
+## 2   4200      Sedan        AWD  [&#39;6&#39;, &#39;2.5L&#39;]         Gray       Gasoline   
+## 3  21200    Minivan        FWD  [&#39;6&#39;, &#39;3.5L&#39;]        White       Gasoline   
+## 4  10000        Van        FWD  [&#39;4&#39;, &#39;2.0L&#39;]        White       Gasoline   
+## 
+##      int_color         location       make  milage    model mpg_city_highway  \
+## 0  Unspecified  Indianapolis,IN        GMC   90440   Acadia            17/24   
+## 1        Black       Fishers,IN  Chevrolet   85961   Impala            19/29   
+## 2        Black    BeechGrove,IN        BMW  152000  3Series            17/24   
+## 3          Tan       Fishers,IN     Nissan   40347    Quest            19/25   
+## 4         Gray       Fishers,IN     Nissan  103728    NV200            24/25   
+## 
+##      stock transmission  year   Region  Num_Cyl  Cyl_Volume  
+## 0   E79334    Automatic  2011  Central        6         3.6  
+## 1  PV5110A    Automatic  2011  Central        6         3.5  
+## 2   m59833    Automatic  2004  Central        6         2.5  
+## 3   18B378    Automatic  2014  Central        6         3.5  
+## 4   693736    Automatic  2013  Central        4         2.0</code></pre>
+<pre class="python"><code># remove some meaningless columns and reduplicate columns
+del cars[&#39;vin&#39;]
+del cars[&#39;engine&#39;]
+del cars[&#39;location&#39;]
+del cars[&#39;mpg_city_highway&#39;]
+del cars[&#39;stock&#39;]
+# check NA values
+cars.isnull().sum().sum()</code></pre>
+<pre><code>## 0</code></pre>
+</div>
+<div id="eda-visualization---learning-about-features-of-used-cars" class="section level3">
+<h3>EDA Visualization - Learning about Features of Used Cars</h3>
+<div id="body-style" class="section level4">
+<h4>1.Body Style</h4>
+<pre class="r"><code># visualize categorical type of features of used cars
+# learn about &quot;body_style&quot; feature
+cars = py$cars
+table(cars$body_style)</code></pre>
+<pre><code>## 
+##     Chassis Convertible       Coupe   Hatchback     Minivan      Pickup 
+##           5         648        1091        1089         730        2432 
+##       Sedan         SUV         Van       Wagon 
+##        9062       10314         127         563</code></pre>
+<pre class="r"><code># remove outliers - &#39;Chassis&#39; body_style
+cars = subset(cars, body_style != &#39;Chassis&#39;)
+# plot
+library(ggplot2)
+library(wesanderson)
+theme_update(plot.title = element_text(hjust = 0.5))
+ggplot(cars, aes(x=body_style,color=body_style)) +
+  geom_bar(fill=&#39;white&#39;) +
+  geom_text(stat=&#39;count&#39;, aes(label=..count..), vjust=-1,size=5,position = position_dodge(0.9))+
+  scale_fill_manual(values=wes_palette(n=3, name=&quot;Royal2&quot;)) +
+  scale_y_continuous(limits = c(0, 12000)) +
+  labs(title = &#39;Barplot of Body Style&#39;, x=&#39;Body Style&#39;, y=&#39;Count&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="drive-type" class="section level4">
+<h4>2. Drive Type</h4>
+<pre class="r"><code># learn about &#39;drive_type&#39; feature
+table(cars$drive_type)</code></pre>
+<pre><code>## 
+##         4WD         AWD         FWD         RWD Unspecified 
+##        4323        6097       11104        4524           8</code></pre>
+<pre class="r"><code># remove outliers - &#39;Unspecified&#39; drive_type
+cars = subset(cars, drive_type != &#39;Unspecified&#39;)
+# Since both &#39;4WD&#39; and &#39;AWD&#39; mean all wheels drive, we combine them together
+library(plyr)
+cars$drive_type &lt;- revalue(cars$drive_type, c(&#39;4WD&#39; = &#39;AWD&#39;))
+# plot
+ggplot(cars, aes(x=drive_type,color=drive_type)) +
+  geom_bar(fill=&#39;white&#39;) +
+  geom_text(stat=&#39;count&#39;, aes(label=..count..), vjust=-1,size=5,position = position_dodge(0.9))+
+  scale_fill_manual(values=wes_palette(n=3, name=&quot;Royal2&quot;)) +
+  scale_y_continuous(limits = c(0, 12000)) +
+  ggtitle(&#39;Barplot of Drive Type&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="exterior-color-interior-color" class="section level4">
+<h4>3. Exterior Color &amp; Interior Color</h4>
+<pre class="r"><code># learn about &#39;ext_color&#39; feature
+table(cars$ext_color)</code></pre>
+<pre><code>## 
+##       Beige       Black        Blue      Bronze       Brown    Burgundy 
+##         376        6034        2086          99         349          75 
+##        Gold        Gray       Green      Orange      Purple         Red 
+##         211        4297         260         133          37        2036 
+##      Silver   Turquoise Unspecified       White      Yellow 
+##        4014          13         643        5307          78</code></pre>
+<pre class="r"><code>library(&quot;dplyr&quot;)
+# plot pie chart of &quot;ext_color&quot; feature
+ec_df = data.frame(table(cars$ext_color)) # create a dataframe
+names(ec_df) &lt;- c(&#39;Color&#39;, &#39;Count&#39;) # rename column name
+ec_df$Color &lt;- as.character(ec_df$Color) # convert column type
+ec_df$Per &lt;- round(ec_df$Count / sum(ec_df$Count) * 100, 1) # compute the percentage
+ec_df &lt;- subset(ec_df, Per != 0) # remove color with 0 percentage
+# sort based on percentage
+ec_df &lt;- ec_df[order(-ec_df$Count),]
+
+# combine minority color to &#39;Other&#39;
+sum_count = sum(ec_df$Count)
+other_count = sum_count - 6034 - 5307 - 4297 - 4014 - 2086 - 2036
+other_per = round(other_count/sum_count*100, 1)
+newRow &lt;- c(&#39;Other&#39;,(other_count), (other_per)) # combine those counts less than 1k
+ec &lt;- rbind(ec_df[1:6,], newRow)
+ec$Count = as.integer(ec$Count)
+ec$Per = as.numeric(ec$Per)</code></pre>
+<pre class="r"><code># add label position
+ec &lt;- ec %&gt;%
+  arrange(desc(Color)) %&gt;%
+  mutate(lab.ypos = cumsum(Per) - 0.5*Per)
+
+# plot
+mycols &lt;- c(&#39;gray12&#39;, &#39;royalblue2&#39;, &#39;dimgray&#39;, &#39;violet&#39;, &#39;red3&#39;, &#39;gray77&#39;, &#39;gray96&#39;) # Other - violet
+ggplot(ec, aes(x = &quot;&quot;, y = Per, fill = Color)) +
+  geom_bar(width = 1, stat = &quot;identity&quot;, color = &quot;white&quot;) +
+  coord_polar(&quot;y&quot;, start = 0)+
+  geom_text(aes(y = lab.ypos, label = Per), color = &quot;cyan&quot;)+
+  scale_fill_manual(values = mycols) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  ggtitle(&#39;Pie Chart of External Color&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># learn about &#39;int_color&#39; feature
+table(cars$int_color)</code></pre>
+<pre><code>## 
+##       Black        Blue       Brown        Gray       Green      Orange 
+##       11412          45         619        4650           5           9 
+##         Red         Tan Unspecified       White      Yellow 
+##         132        2728        6113         327           8</code></pre>
+<pre class="r"><code># plot pie chart of &quot;int_color&quot; feature
+ic_df = data.frame(table(cars$int_color)) # create a dataframe
+names(ic_df) &lt;- c(&#39;Color&#39;, &#39;Count&#39;) # rename column name
+ic_df$Color &lt;- as.character(ic_df$Color) # convert column type
+ic_df$Per &lt;- round(ic_df$Count / sum(ic_df$Count) * 100, 1) # compute the percentage
+ic_df &lt;- subset(ic_df, Per != 0) # remove color with 0 percentage
+# sort based on percentage
+ic_df &lt;- ic_df[order(-ic_df$Count),]
+
+# combine minority color and unspecified color to &#39;Other&#39;
+sum_count = sum(ic_df$Count)
+other_count = sum_count - 11412 - 4650 - 2728
+other_per = round(other_count/sum_count*100, 1)
+newRow &lt;- c(&#39;Other&#39;,(other_count), (other_per))
+ic &lt;- rbind(ic_df[1,], newRow)
+ic &lt;- rbind(ic, ic_df[3:4, ])
+ic$Count = as.integer(ic$Count)
+ic$Per = as.numeric(ic$Per)</code></pre>
+<pre class="r"><code># add label position
+ic &lt;- ic %&gt;%
+  arrange(desc(Color)) %&gt;%
+  mutate(lab.ypos = cumsum(Per) - 0.5*Per)
+
+# plot
+mycols &lt;- c(&#39;gray12&#39;, &#39;dimgray&#39;, &#39;violet&#39;, &#39;#D2B48C&#39;) # Other - violet
+ggplot(ic, aes(x = &quot;&quot;, y = Per, fill = Color)) +
+  geom_bar(width = 1, stat = &quot;identity&quot;, color = &quot;white&quot;) +
+  coord_polar(&quot;y&quot;, start = 0)+
+  geom_text(aes(y = lab.ypos, label = Per), color = &quot;cyan&quot;)+
+  scale_fill_manual(values = mycols) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&#39;Pie Chart of Internal Color&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="fuel" class="section level4">
+<h4>4. Fuel</h4>
+<pre class="r"><code># learn about &quot;fuel&quot; feature
+table(cars$fuel)</code></pre>
+<pre><code>## 
+##   Alternative        Diesel Flexible-Fuel      Gasoline        Hybrid 
+##             3           568          2683         22214           580</code></pre>
+<pre class="r"><code># remove outliers
+cars = subset(cars, fuel != &#39;Alternative&#39;)
+fuel_tbl = table(cars$fuel)
+
+# waffle plot
+library(waffle)
+waffle(fuel_tbl/200, rows = 7,, xlab = &#39;1 square = 200 cars&#39;, title = &#39;Waffle Plot of Used Cars Fuel Type&#39;)+theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="city-mpg-highway-mpg" class="section level4">
+<h4>5. City MPG &amp; Highway MPG</h4>
+<pre class="r"><code># learn about &quot;transmisison&quot; feature
+table(cars$transmission)</code></pre>
+<pre><code>## 
+##   Automatic      Manual Unspecified 
+##       24903         904         238</code></pre>
+<pre class="r"><code>library(ggpubr)
+library(cowplot)
+# remove &#39;Unspecified&#39; cars
+cars = subset(cars, transmission != &#39;Unspecified&#39;)
+# remove MPG == 0
+cars = subset(cars, City_MPG != 0)
+cars = subset(cars, Highway_MPG != 0)
+# Scatter Plots
+plot1 &lt;- ggplot(cars, aes(x = City_MPG, y = Highway_MPG)) +
+  geom_count(aes(color = transmission))+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_light()+ theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&#39;Scatter Plot of MPG based on Different Transmission&#39;)
+plot2 &lt;- ggplot(cars, aes(x = City_MPG, y = Highway_MPG)) +
+  geom_count(aes(color = drive_type))+
+  theme_pubclean()+ theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&#39;Scatter Plot of MPG based on Different Drive Type&#39;)
+plot3 &lt;- ggplot(cars, aes(x = City_MPG, y = Highway_MPG)) +
+  geom_count(aes(color = fuel))+
+  theme_half_open()+ theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&#39;Scatter Plot of MPG based on Different Fuel Type&#39;)
+plot4 &lt;- ggplot(cars, aes(x = City_MPG, y = Highway_MPG)) +
+  geom_count(aes(color = factor(Num_Cyl)))+
+  theme_bw()+ theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle(&#39;Scatter Plot of MPG based on Different #ofCylinders&#39;)
+plot1</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>plot2</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<pre class="r"><code>plot3</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
+<pre class="r"><code>plot4</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-17-4.png" width="672" /></p>
+</div>
+<div id="price-year" class="section level4">
+<h4>6. Price &amp; Year</h4>
+<pre class="r"><code># learn about distribution of milage and price (continuous feature)
+ggplot(cars, aes(x=price)) +
+    geom_histogram(binwidth = 5000, color=&#39;red&#39;, fill=&#39;royalblue3&#39;)+
+    theme_half_open()+ theme(plot.title = element_text(hjust = 0.5))+ ylim(c(0,6000))+
+    labs(title=&#39;Distribution of Used Cars Price&#39;, y=&#39;Count&#39;, x=&#39;Price(USD)&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code># learn about &#39;year&#39;
+pp &lt;- ggplot(data=cars, aes(x=year)) + 
+      geom_bar(aes(y = (..count..)/sum(..count..)), fill=&#39;lightpink2&#39;)+ xlim(c(2000, 2020)) +
+      labs(title= &#39;Bar Plot of Used Car Year&#39;)+ ylab(&#39;Percentage&#39;)+xlab(&#39;Year&#39;)+
+      theme_pubclean() + theme(plot.title = element_text(hjust = 0.5))
+library(scales)
+pp + scale_y_continuous(labels = percent) + coord_flip()</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>## hex
+ggplot(cars, aes(year, price))+
+  geom_hex(bins=20)+theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))+ xlim(c(2000,2020))+ ylim(c(2000,80000))+
+  labs(title=&#39;Price Density Hex Plot&#39;, subtitle = &#39;accordigng to year&#39;, y=&#39;Price(USD)&#39;, x=&#39;Year&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="make-model-textviz---word-cloud" class="section level4">
+<h4>7. Make &amp; Model (TextViz - ‘word cloud’)</h4>
+<pre class="r"><code># word cloud - car &#39;make&#39; and &#39;model&#39;
+write.table(cars$make, &quot;make.txt&quot;, sep=&quot;\t&quot;,row.names=FALSE, quote = FALSE)
+write.table(cars$model,&quot;model.txt&quot;,sep=&quot;\t&quot;,row.names=FALSE, quote = FALSE)</code></pre>
+<pre class="r"><code># generate the car make and model word cloud
+library(tm)
+library(SnowballC)
+library(wordcloud2)
+library(RColorBrewer)
+# Read the text file
+make_text = readLines(&#39;make.txt&#39;)
+model_text = readLines(&#39;model.txt&#39;)
+# Load the data as a corpus
+doc &lt;- Corpus(VectorSource(make_text))
+docs &lt;- Corpus(VectorSource(model_text))
+# inspect(docs)
+
+## Make
+dtm_ &lt;- TermDocumentMatrix(doc)
+m_ &lt;- as.matrix(dtm_)
+v_ &lt;- sort(rowSums(m_),decreasing=TRUE)
+d_ &lt;- data.frame(word = names(v_),freq=v_)
+## Model
+dtm &lt;- TermDocumentMatrix(docs)
+m &lt;- as.matrix(dtm)
+v &lt;- sort(rowSums(m),decreasing=TRUE)
+d &lt;- data.frame(word = names(v),freq=v)
+
+# generate the word cloud - Make
+wordcloud2(d_, size= 1, color = &#39;random-light&#39;, backgroundColor = &#39;grey&#39;)</code></pre>
+<div id="htmlwidget-5253900811800ec1ad30" style="width:672px;height:480px;" class="wordcloud2 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5253900811800ec1ad30">{"x":{"word":["ford","chevrolet","toyota","nissan","honda","bmw","jeep","mercedes-benz","hyundai","lexus","volkswagen","audi","gmc","kia","dodge","infiniti","acura","subaru","cadillac","chrysler","mazda","buick","ram","landrover","mini","lincoln","volvo","porsche","mitsubishi","jaguar","scion","maserati","fiat","mercury","pontiac","saturn","saab","hummer","smart","bentley","alfaromeo","maybach","oldsmobile","genesis","suzuki"],"freq":[2455,2417,2141,1719,1655,1612,1377,1339,1059,964,839,775,730,730,726,477,470,465,445,424,370,340,320,229,196,189,172,152,107,91,90,85,51,18,15,12,11,9,8,6,4,2,2,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-light","minSize":0,"weightFactor":0.0733197556008147,"backgroundColor":"grey","gridSize":0,"minRotation":-0.785398163397448,"maxRotation":0.785398163397448,"shuffle":true,"rotateRatio":0.4,"shape":"circle","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># generate the word cloud
+wordcloud2(d, size= 0.9, color = &#39;random-dark&#39;, shape = &#39;diamond&#39;)</code></pre>
+<div id="htmlwidget-50d6c04d30395816061c" style="width:672px;height:480px;" class="wordcloud2 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50d6c04d30395816061c">{"x":{"word":["f-150","3series","civic","silverado1500","accord","camry","grandcherokee","escape","altima","c-class","rogue","explorer","wrangler","equinox","1500","rav4","sonata","corolla","fusion","cruze","jetta","cherokee","elantra","cr-v","e-class","5series","edge","sentra","highlander","malibu","odyssey","tahoe","optima","passat","acadia","pilot","terrain","santafe","tacoma","mustang","focus","camaro","sierra1500","traverse","sorento","patriot","4series","tundra","outback","mdx","journey","rdx","charger","q50","300","sienna","srx","m-class","pathfinder","4runner","prius","impala","forester","challenger","tucson","compass","escalade","cooper","200","soul","murano","maxima","tiguan","town&amp;country","sportage","cx-5","grandcaravan","mazda3","colorado","frontier","enclave","cla","suburban","yukon","versa","s-class","qx60","durango","golf","tlx","encore","cayenne","genesis","forte","rangeroversport","cts","lacrosse","yukonxl","glk","avalon","mazda6","impreza","gla","gl-class","legacy","renegade","ats","trax","ghibli","cls","corvette","s60","pacifica","expedition","mkz","fiesta","fit","xc60","2series","7series","dart","taurus","rangeroverevoque","accent","titan","flex","6series","cx-9","gle","mkx","coopercountryman","expeditionel","beetle","outlandersport","juke","rangerover","sonic","touareg","verano","ilx","g37","liberty","armada","sedona","ram1500","venza","mkc","veloster","versanote","discoverysport","500","xts","c-max","avalanche1500","regal","sl-class","rio","qx80","volt","qx56","avenger","canyon","qx50","xvcrosstrek","gti","lr4","hr-v","xt5","q40","macan","mks","suburban1500","cooperclubman","xc90","outlander","quest","tsx","express","wrx","miata","f-pace","1series","sequoia","accordcrosstour","glc","priusc","q70","nv200","slk","transitconnect","sq5","panamera","q60","azera","ridgeline","boxster","fjcruiser","trailblazer","qx70","qx30","gls","eos","cobalt","mazda5","crosstrek","500x","dakota","allroad","equus","spark","xterra","matrix","cadenza","g35","fr-s","priusplug-in","rlx","mirage","clk","lucerne","dts","envision","granturismo","routan","continental","mariner","navigator","yaris","cayman","thunderbird","m37","ex35","priusv","9-3","quattroporte","lr2","lancer","caliber","ptcruiser","f-type","roguesport","cooperpaceman","priusprime","nitro","hhr","commander","econoline","fortwo","xc70","camrysolara","v60","mirageg4","veracruz","captivasport","ranger","tribeca","jx35","eclipse","r-class","lancerevolution","cx-3","yarisia","fx35","cl-class","500l","atlas","cr-z","brz","forte5","transit","envoy","lesabre","crossfire","c/v","rabbit","landcruiser","mkt","magnum","explorersporttrac","cooperroadster","cx-7","deville","911","v70","m35","levante","s80","metris","cube","s40","rs5","mazdaspeed3","s-10","navigatorl","towncar","element","vue","aveo","s-type","mazda2","cascada","gt-r","aspen","rsx","giulia","insight","718boxster","c-hr","corollaim","r32","lr3","sebring","s90","coopercoupe","tribute","grandmarquis","718cayman","124spider","ion","firebird","newbeetle","crownvictoria","zdx","baja","g-class","ct6","mountaineer","torrent","b-series","vibe","entourage","borrego","montecarlo","c70","outlook","slc","xlr","phaeton","niro","spectra","milan","x-type","s2000","stratus","sts","sky","uplander","seville","rainier","terraza","ex37","i30","astro","solstice","v50","9-5","v90","aura","rangerovervelar","savana","endeavor","zephyr","g80","fx37","gto","marklt","mroadster","bonneville","caravan","century","rendezvous","grandprix","freestar","elr","i35","l-series","cityexpress","silveradohybrid","g20","g25","9-7x","rs4","fivehundred","forenza","blazer","silhouette","galant","sable","m56","m45","spyder","intrigue","sierra1500hybrid","rs7","rondo"],"freq":[505,479,447,435,418,388,385,380,370,359,358,348,346,316,315,309,299,291,291,286,282,272,267,263,261,259,226,221,213,209,209,203,199,197,189,189,186,186,184,183,175,173,166,159,159,152,152,146,146,142,138,138,137,134,134,132,131,131,124,124,123,122,118,117,114,114,111,111,109,109,108,107,104,102,102,101,100,99,97,93,92,91,90,88,87,86,86,84,83,78,77,76,75,74,71,70,70,69,69,69,66,66,64,63,63,61,60,60,60,59,59,58,58,58,57,57,55,54,54,53,53,52,52,51,51,50,49,47,47,46,46,46,43,42,41,41,41,41,40,40,40,39,39,37,37,32,31,30,30,29,29,28,28,27,27,27,26,26,25,24,24,24,24,24,24,23,23,23,23,23,23,22,22,22,22,21,21,21,20,20,20,19,19,19,19,18,18,17,17,17,17,17,17,16,16,15,15,15,15,15,14,14,13,13,13,13,12,12,12,12,12,12,11,11,11,11,10,10,10,10,10,10,10,10,10,10,10,10,9,9,9,9,9,9,9,9,9,9,9,9,9,9,8,8,8,8,8,8,8,8,8,8,7,7,7,7,7,7,7,7,6,6,6,6,6,6,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"fontFamily":"Segoe UI","fontWeight":"bold","color":"random-dark","minSize":0,"weightFactor":0.320792079207921,"backgroundColor":"white","gridSize":0,"minRotation":-0.785398163397448,"maxRotation":0.785398163397448,"shuffle":true,"rotateRatio":0.4,"shape":"diamond","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="task-visualization" class="section level3">
+<h3>Task Visualization</h3>
+<div id="fuel-economy-anlysis-of-the-20-most-polular-used-car-models" class="section level4">
+<h4>1. Fuel Economy Anlysis of the 20 Most Polular Used Car Models</h4>
+<p><img src="fe.jpg" /></p>
+<pre class="python"><code># Special Task
+## Data Prep
+# load in original data
+import numpy as np
+import pandas as pd
+vh = pd.read_csv(&#39;used_car.csv&#39;)
+# top 20 cars - List
+car_list= [&quot;F-150&quot;, &quot;3Series&quot;, &quot;Civic&quot;,&quot;Malibu&quot;,&quot;Accord&quot;,&quot;Camry&quot;,&quot;Focus&quot;,&quot;Escape&quot;,&quot;Altima&quot;,&quot;C-Class&quot;,&quot;Rogue&quot;,&quot;Explorer&quot;,&quot;Passat&quot;,&quot;Tucson&quot;,&quot;CR-V&quot;,&quot;Sonata&quot;,&quot;Corolla&quot;,&quot;Fusion&quot;,&quot;Cruze&quot;,&quot;Jetta&quot;]
+# mean City MPG of each car - List
+mpg_list = []
+for v in car_list:
+    mpg_list.append(round(np.mean(vh[&#39;City_MPG&#39;][vh[&#39;model&#39;] == v].values), 2))
+vh = pd.DataFrame({&#39;name&#39;: car_list, &#39;mpg&#39;: mpg_list})</code></pre>
+<pre class="r"><code>vh = py$vh
+theme_set(theme_bw())  
+
+# Data Prep Cont...
+vh$mpg_z &lt;- round((vh$mpg - mean(vh$mpg))/sd(vh$mpg), 2)  # compute normalized mpg
+vh$mpg_type &lt;- ifelse(vh$mpg_z &lt; 0, &quot;below&quot;, &quot;above&quot;)  # above / below avg flag
+vh &lt;- vh[order(vh$mpg_z), ]  # sort
+vh$name &lt;- factor(vh$name, levels = vh$name)  # convert to factor to retain sorted order in plot.
+
+# Diverging Barcharts
+ggplot(vh, aes(x=name, y=mpg_z, label=mpg_z)) + 
+  geom_bar(stat=&#39;identity&#39;, aes(fill=mpg_type), width=.5)  +
+  scale_fill_manual(name=&quot;MPG&quot;, 
+                    labels = c(&quot;Above Average&quot;, &quot;Below Average&quot;), 
+                    values = c(&quot;above&quot;=&quot;#00ba38&quot;, &quot;below&quot;=&quot;#f8766d&quot;)) +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))+
+  labs(title= &quot;Analysis of Top 20 Models City MPG&quot;, subtitle = &quot;Top 20 Most Popular Models in the Used Cars Market&quot;) + coord_flip()+
+  ylab(&#39;Normalized MPG&#39;) + xlab(&#39;Model&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>From the chart above, we can clearly see that basic entry-level models such as Civic and Corolla are relatively fuel-efficient for daily transportation; in addition, big pickup trucks such as F150, other SUVs, and German high-end sedans are more fuel-costly.</p>
+</div>
+<div id="polular-used-car-models-price-trend-visualization" class="section level4">
+<h4>2. 3 Polular Used Car Models Price Trend Visualization</h4>
+<pre class="python"><code>t2 = pd.read_csv(&#39;used_car.csv&#39;)
+# civic
+t2_civic = t2[t2[&#39;model&#39;] == &#39;Civic&#39;]
+civic_year = sorted([2015,2016,2017,2013,2014,2012,2010,2008,2009,2011,2006,2007,2004,2005,2003,2013])
+civic_price = []
+for y in civic_year:
+    civic_price.append(int(np.mean(t2_civic[&#39;price&#39;][t2_civic[&#39;year&#39;] == y].values)))
+civic_model = [&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;,&#39;Civic&#39;]
+civic = pd.DataFrame({&#39;year&#39;: civic_year, &#39;price&#39;: civic_price, &#39;model&#39;:civic_model})
+# corolla
+t2_corolla = t2[t2[&#39;model&#39;] == &#39;Corolla&#39;]
+corolla_year = sorted([2015,2016,2017,2013,2010,2014,2018,2011,2005,2012,2009,2007,2006,2004,2002,2008])
+corolla_price = []
+for y in corolla_year:
+    corolla_price.append(int(np.mean(t2_corolla[&#39;price&#39;][t2_corolla[&#39;year&#39;] == y].values)))
+corolla_model = [&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;,&#39;Corolla&#39;]
+corolla = pd.DataFrame({&#39;year&#39;: corolla_year, &#39;price&#39;: corolla_price, &#39;model&#39;:corolla_model})
+# explorer
+t2_explorer = t2[t2[&#39;model&#39;] == &#39;Explorer&#39;]
+explorer_year = sorted([2015,2016,2014,2017,2013,2012,2011,2007,2003,2018,2008,2010,2006,2005,2004,2002])
+explorer_price = []
+for y in explorer_year:
+    explorer_price.append(int(np.mean(t2_explorer[&#39;price&#39;][t2_explorer[&#39;year&#39;] == y].values)))
+explorer_model = [&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;,&#39;Explorer&#39;]
+explorer = pd.DataFrame({&#39;year&#39;: explorer_year, &#39;price&#39;: explorer_price, &#39;model&#39;:explorer_model})
+task2 = pd.concat([civic, corolla, explorer])</code></pre>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## Warning: package &#39;plotly&#39; was built under R version 3.6.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:plyr&#39;:
+## 
+##     arrange, mutate, rename, summarise</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>task2=py$task2</code></pre>
+<pre><code>## Warning in py_to_r.pandas.core.frame.DataFrame(x): index contains duplicated
+## values: row names not set</code></pre>
+<pre class="r"><code># plot
+fig &lt;- plot_ly(task2, x = ~year, y = ~price, color= ~model, type = &#39;scatter&#39;, mode = &#39;lines&#39;)
+
+fig &lt;- fig %&gt;%  layout(title = &#39;3 Polular Used Car Models Price Trend Plot&#39;, 
+                       yaxis = list(title = &#39;Price&#39;), 
+                       xaxis = list(autorange=&#39;reversed&#39;))
+                       
+fig</code></pre>
+<pre><code>## Warning: `arrange_()` is deprecated as of dplyr 0.7.0.
+## Please use `arrange()` instead.
+## See vignette(&#39;programming&#39;) for more help
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<div id="htmlwidget-d56eb4b82fe6fa334dd7" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d56eb4b82fe6fa334dd7">{"x":{"visdat":{"1273810207894":["function () ","plotlyVisDat"]},"cur_data":"1273810207894","attrs":{"1273810207894":{"x":{},"y":{},"mode":"lines","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"3 Polular Used Car Models Price Trend Plot","yaxis":{"domain":[0,1],"automargin":true,"title":"Price"},"xaxis":{"domain":[0,1],"automargin":true,"autorange":"reversed","title":"year"},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2013,2014,2015,2016,2017],"y":[3999,5263,4766,5225,5712,7108,8052,7781,7282,10381,11596,11596,12661,14172,17186,19247],"mode":"lines","type":"scatter","name":"Civic","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2002,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"y":[4870,4538,4876,4859,6314,6363,7631,8012,9423,10122,10009,12037,13550,14208,15081,17098],"mode":"lines","type":"scatter","name":"Corolla","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2002,2003,2004,2005,2006,2007,2008,2010,2011,2012,2013,2014,2015,2016,2017,2018],"y":[6990,4329,3999,6995,9998,6497,6832,13286,16387,17243,17835,20285,25659,28266,31796,36809],"mode":"lines","type":"scatter","name":"Explorer","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>As can be seen from the line chart above, Japanese-brand entry-level sedans, such as Corolla, Civic, have a large quantity in the used car market, so their prices will undoubtedly decrease with the time of use.<br />
+In addition, we have an interesting findings. As Ford’s main SUV model–Explorer, its 2006 model is more expensive than the 2007 model in the used car market. I checked some information and found that the Explorer had a new generation in 2006. The sales performance of the fourth-generation Explorer(2006) going on the market continued the decline of the third-generation model, and it did not achieve good reputation when it was launched. Moreover, Coupled with the 2008 financial crisis that followed, the quantity of 2006 Explorer in the market can be said to be very small, which may cause its price to be higher than 2007, 2008 version. If you want to know more information about explorer, you can check the link below:<br />
+‘<a href="https://www.topspeed.com/cars/six-generations-of-the-ford-explorer-ar184141.html" class="uri">https://www.topspeed.com/cars/six-generations-of-the-ford-explorer-ar184141.html</a>’</p>
+<p><img src="06-explorer.jpg" /></p>
+</div>
+<div id="geospatial---registered-autos-by-county-in-california" class="section level4">
+<h4>3. Geospatial - Registered Autos by County in California</h4>
+<p>If you are considering buying or selling a used car, you must want to know about the car ownership near where you are. Let’s take California as an example to see how many vehicles there are in each county in California.<br />
+Data reference: “<a href="https://www.dmv.ca.gov/portal/uploads/2020/06/2019-Estimated-Vehicles-Registered-by-County-1.pdf" class="uri">https://www.dmv.ca.gov/portal/uploads/2020/06/2019-Estimated-Vehicles-Registered-by-County-1.pdf</a>”.</p>
+<pre class="r"><code>library(sf)
+library(dplyr)
+options(scipen = 999)
+ca_shape_map = st_read(&#39;CA_Counties/CA_counties_TIGER2016.shp&#39;, stringsAsFactors = FALSE)</code></pre>
+<pre><code>## Reading layer `CA_Counties_TIGER2016&#39; from data source `/Users/kuiyuzhu/Desktop/503pf/ANLY503_Portfolio/CA_Counties/CA_Counties_TIGER2016.shp&#39; using driver `ESRI Shapefile&#39;
+## Simple feature collection with 58 features and 17 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -13857270 ymin: 3832931 xmax: -12705030 ymax: 5162404
+## CRS:            3857</code></pre>
+<pre class="r"><code>t3 = read.csv(&#39;ESTIMATED_AUTOS_REGISTERED_BY_COUNTY.csv&#39;) # read in data
+t3$Percentage1000 &lt;- t3$Autos/sum(t3$Autos) *1000
+t3_ = inner_join(ca_shape_map, t3, by=&#39;NAME&#39;)
+
+t3_plot = ggplot(t3_)+
+  geom_sf(aes(fill= Percentage1000))+
+  scale_fill_gradient(low = &#39;#99CCFF&#39;, high = &#39;#003366&#39;)+
+  labs(title=&#39;Estimated Autos Registered by County in California-2019&#39;)
+t3_plot</code></pre>
+<dl>
+<dt><img src="503p_files/figure-html/unnamed-chunk-29-1.png" width="672" /></dt>
+<dd>
+</dd>
+</dl>
+<p>Los Angeles County has the most newly registered cars, and the number is overwhelming.</p>
+</div>
+<div id="network-analysis" class="section level4">
+<h4>4. Network Analysis</h4>
+<div id="top-8-california-cities-have-the-most-bmw-toyota-ford-used-cars" class="section level5">
+<h5>Top 8 California Cities have the most BMW, Toyota, Ford Used Cars</h5>
+<pre class="python"><code># data prepare
+t4 = pd.read_csv(&#39;used_car.csv&#39;)
+# CA
+t4 = t4[t4[&#39;State&#39;] == &#39;CA&#39;]
+# Ford
+t4_ford = t4[t4[&#39;make&#39;] == &#39;Ford&#39;]
+t4_ford_city = t4_ford[&#39;City&#39;].value_counts().keys().tolist()[0:8]
+t4_ford_count = t4_ford[&#39;City&#39;].value_counts().tolist()[0:8]
+t4_ford_list = [&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;,&#39;Ford&#39;]
+ford_top8 = pd.DataFrame({&#39;Make&#39;: t4_ford_list, &#39;City&#39;: t4_ford_city, &#39;Count&#39;:t4_ford_count})
+# Toyota
+t4_toyota = t4[t4[&#39;make&#39;] == &#39;Toyota&#39;]
+t4_toyota_city = t4_toyota[&#39;City&#39;].value_counts().keys().tolist()[0:8]
+t4_toyota_count = t4_toyota[&#39;City&#39;].value_counts().tolist()[0:8]
+t4_toyota_list = [&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;,&#39;Toyota&#39;]
+toyota_top8 = pd.DataFrame({&#39;Make&#39;: t4_toyota_list, &#39;City&#39;: t4_toyota_city, &#39;Count&#39;:t4_toyota_count})
+# BMW
+t4_bmw = t4[t4[&#39;make&#39;] == &#39;BMW&#39;]
+t4_bmw_city = t4_bmw[&#39;City&#39;].value_counts().keys().tolist()[0:8]
+t4_bmw_count = t4_bmw[&#39;City&#39;].value_counts().tolist()[0:8]
+t4_bmw_list = [&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;,&#39;BMW&#39;]
+bmw_top8 = pd.DataFrame({&#39;Make&#39;: t4_bmw_list, &#39;City&#39;: t4_bmw_city, &#39;Count&#39;:t4_bmw_count})
+top8 = pd.concat([ford_top8,toyota_top8,bmw_top8])</code></pre>
+<pre class="r"><code># transfer data to r env
+flow = py$top8
+flow$Count = ((flow$Count - min(flow$Count)) / (max(flow$Count) - min(flow$Count))) / 2 # convert for visualization</code></pre>
+<pre class="r"><code># start to plot 
+library(tidygraph)
+library(stringr)
+library(ggraph)
+graph_flow &lt;- as_tbl_graph(flow)
+
+graph_flow &lt;- graph_flow %&gt;%
+  activate(nodes) %&gt;%
+  mutate(
+    title = str_to_title(name),
+    label = str_replace_all(title, &quot; &quot;, &quot;\n&quot;)
+    )
+# set theme
+thm &lt;- theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,
+     axis.title = element_blank(),
+     axis.text = element_blank(),
+     panel.grid = element_blank(),
+     panel.grid.major = element_blank(),
+  ) 
+
+theme_set(thm)
+
+# plot
+graph_flow %&gt;%
+  ggraph(layout = &#39;kk&#39;) +
+    geom_edge_diagonal(aes(colour = factor(from), width = Count), alpha=0.4, ends = &quot;last&quot;, type = &quot;open&quot;) +
+    geom_node_text(aes(label = label, color = name, fontface=&#39;bold&#39;), size = 3.8) +
+    labs(title = &#39;Top 8 California Cities/Neighborhood have the most BMW, Toyota, Ford Used Cars&#39;)</code></pre>
+<p><img src="503p_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

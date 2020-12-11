@@ -1,9 +1,17 @@
 ---
-title: "My Website"
+title: "About This Website"
 ---
 
-Hello, Website!
+![](cover.jpeg)
+Hello World! 
 
-For more information about simple R Markdown websites, please read the documentation at https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html.
+This website is for sharing the code, plots and some findings of my assignments & final project while taking "ANLY 503"
 
-Please also note that simple R Markdown sites are _not_ based on **blogdown**. They are probably good for websites with only a few Rmd documents. For larger-scale and more sophisticated websites (such as blogs), you may want to use **blogdown** instead: https://github.com/rstudio/blogdown.
+(Analytical Data Visualization) course. Please feel free to contact me if you have any thoughts, suggestions and comments!
+
+
+My Name: Kuiyu Zhu
+
+My E-mail: kz175@georgetown.edu
+
+For more information: https://github.com/A1rbag

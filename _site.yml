@@ -1,14 +1,20 @@
 name: "my-website"
 output_dir: "docs"
 navbar:
-  title: "A1rbag DataViz"
+  title: "DataViz Portfolio"
   left:
     - text: "Home"
       href: index.html
-    - text: "About"
-      href: about.html
+    - text: "Hand Drawing"
+      href: A1.html
+    - text: "Bank Analysis"
+      href: BankAnalysis.html
+    - text: "Geospatial"
+      href: geospatial.html
     - text: "Network"
       href: networks.html
+    - text: "Final Project"
+      href: 503p.html
 output:
   html_document:
     theme: cosmo

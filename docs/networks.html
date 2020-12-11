@@ -269,7 +269,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">A1rbag DataViz</a>
+      <a class="navbar-brand" href="index.html">DataViz Portfolio</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -277,10 +277,19 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">About</a>
+  <a href="A1.html">Hand Drawing</a>
+</li>
+<li>
+  <a href="BankAnalysis.html">Bank Analysis</a>
+</li>
+<li>
+  <a href="geospatial.html">Geospatial</a>
 </li>
 <li>
   <a href="networks.html">Network</a>
+</li>
+<li>
+  <a href="503p.html">Final Project</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -580,11 +589,10 @@ states</code></pre>
 ## [25] &quot;Missouri&quot;       &quot;Minnesota&quot;      &quot;Kansas&quot;         &quot;South Dakota&quot;  
 ## [29] &quot;Wisconsin&quot;</code></pre>
 <pre class="r"><code># visualization
-library(ggplot2)</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.6.2</code></pre>
-<pre class="r"><code>library(ggraph)</code></pre>
-<pre><code>## Warning: package &#39;ggraph&#39; was built under R version 3.6.2</code></pre>
-<pre class="r"><code># set theme
+library(ggplot2)
+library(ggraph)
+
+# set theme
 thm &lt;- theme_minimal() +
   theme(
     legend.position = &quot;none&quot;,
