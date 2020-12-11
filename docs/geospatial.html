@@ -316,8 +316,8 @@ use_python(&#39;/Library/Frameworks/Python.framework/Versions/3.7/bin/python3&#3
 <pre class="python"><code>## data preparing
 # import packages
 import pandas as pd
-import xlrd</code></pre>
-<pre class="python"><code>pd.set_option(&#39;display.expand_frame_repr&#39;, False)
+import xlrd
+pd.set_option(&#39;display.expand_frame_repr&#39;, False)
 # election data
 elec = pd.read_csv(&#39;countypres_2000-2016.csv&#39;)
 elec.head()</code></pre>
@@ -335,13 +335,6 @@ elec = elec[elec[&#39;year&#39;] != 2000]
 elec = elec[elec[&#39;year&#39;] != 2004]
 # drop rows where candidate == &#39;Other&#39;
 elec = elec[elec[&#39;candidate&#39;] != &#39;Other&#39;]</code></pre>
-<pre class="python"><code># check party value counts and data shape
-elec[&#39;party&#39;].value_counts()</code></pre>
-<pre><code>## republican    9474
-## democrat      9474
-## Name: party, dtype: int64</code></pre>
-<pre class="python"><code>elec.shape</code></pre>
-<pre><code>## (18948, 9)</code></pre>
 <pre class="python"><code># create a new column to show the proportion of the vote won by either the Democratic or Republican candidate
 elec[&#39;voteprop&#39;] = round(elec[&#39;candidatevotes&#39;] / elec[&#39;totalvotes&#39;], 4)
 del elec[&#39;candidatevotes&#39;]
@@ -432,26 +425,23 @@ ca_shape_map = st_read(&#39;CA_Counties/CA_counties_TIGER2016.shp&#39;, stringsA
 <pre class="r"><code>ca_uepm = py$uepm_ca
 ca_shape_and_uepm = inner_join(ca_shape_map, ca_uepm, by=&#39;NAME&#39;)
 
-vis_ca_uepm_2008 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of California in 2008&#39;)
-vis_ca_uepm_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of California in 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of California in 2012
-vis_ca_uepm_2012 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of California in 2012&#39;)
-vis_ca_uepm_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of California in 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of California in 2016
-vis_ca_uepm_2016 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of California in 2016&#39;)
-vis_ca_uepm_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of California in 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Texas in 2008
 tx_shape_map = st_read(&#39;Texas_County_Boundaries-shp/County.shp&#39;, stringsAsFactors = FALSE)</code></pre>
 <pre><code>## Reading layer `County&#39; from data source `/Users/kuiyuzhu/Desktop/503pf/ANLY503_Portfolio/Texas_County_Boundaries-shp/County.shp&#39; using driver `ESRI Shapefile&#39;
@@ -464,26 +454,23 @@ tx_shape_map = st_read(&#39;Texas_County_Boundaries-shp/County.shp&#39;, strings
 tx_uepm = py$uepm_tx
 tx_shape_and_uepm = inner_join(tx_shape_map, tx_uepm, by=&#39;FIPStxt&#39;)
 
-vis_tx_uepm_2008 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Texas in 2008&#39;)
-vis_tx_uepm_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Texas in 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Texas in 2012
-vis_tx_uepm_2012 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Texas in 2012&#39;)
-vis_tx_uepm_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Texas in 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Texas in 2016
-vis_tx_uepm_2016 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Texas in 2016&#39;)
-vis_tx_uepm_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Texas in 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Pennsylvania in 2008
 pa_shape_map = st_read(&#39;PA_Counties_clip.shp/PA_Counties_clip.shp&#39;, stringsAsFactors = FALSE)</code></pre>
 <pre><code>## Reading layer `PA_Counties_clip&#39; from data source `/Users/kuiyuzhu/Desktop/503pf/ANLY503_Portfolio/PA_Counties_clip.shp/PA_Counties_clip.shp&#39; using driver `ESRI Shapefile&#39;
@@ -495,56 +482,50 @@ pa_shape_map = st_read(&#39;PA_Counties_clip.shp/PA_Counties_clip.shp&#39;, stri
 <pre class="r"><code>pa_uepm = py$uepm_pa
 pa_shape_and_uepm = inner_join(pa_shape_map, pa_uepm, by=&#39;NAME&#39;)
 
-vis_pa_uepm_2008 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Pennsylvania in 2008&#39;)
-vis_pa_uepm_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Pennsylvania in 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Pennsylvania in 2012
-vis_pa_uepm_2012 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Pennsylvania in 2012&#39;)
-vis_pa_uepm_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Pennsylvania in 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Unemployment Rate of Pennsylvania in 2016
-vis_pa_uepm_2016 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = &#39;#f2d0df&#39;, high = &#39;#a30034&#39;)+
-    labs(title=&#39;Unemployment Rate of Pennsylvania in 2016&#39;)
-vis_pa_uepm_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+    labs(title=&#39;Unemployment Rate of Pennsylvania in 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in California, 2008
 elec_ca_08 = py$elec_ca_2008
 ca_shape_and_elec_08 = inner_join(ca_shape_map, elec_ca_08, by=&#39;NAME&#39;)
 
-vis_ca_elec_2008 = ggplot(ca_shape_and_elec_08)+
+ggplot(ca_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2008&#39;)
-vis_ca_elec_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in California, 2012
 elec_ca_12 = py$elec_ca_2012
 ca_shape_and_elec_12 = inner_join(ca_shape_map, elec_ca_12, by=&#39;NAME&#39;)
 
-vis_ca_elec_2012 = ggplot(ca_shape_and_elec_12)+
+ggplot(ca_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2012&#39;)
-vis_ca_elec_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in California, 2016
 elec_ca_16 = py$elec_ca_2016
 ca_shape_and_elec_16 = inner_join(ca_shape_map, elec_ca_16, by=&#39;NAME&#39;)
 
-vis_ca_elec_2016 = ggplot(ca_shape_and_elec_16)+
+ggplot(ca_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2016&#39;)
-vis_ca_elec_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in CA, 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Texas, 2008
 tx_shape_map = st_read(&#39;Texas_County_Boundaries-shp/County.shp&#39;, stringsAsFactors = FALSE)</code></pre>
 <pre><code>## Reading layer `County&#39; from data source `/Users/kuiyuzhu/Desktop/503pf/ANLY503_Portfolio/Texas_County_Boundaries-shp/County.shp&#39; using driver `ESRI Shapefile&#39;
@@ -558,64 +539,58 @@ elec_tx_08 = py$elec_tx_2008
 elec_tx_08$FIPS = as.character(as.integer(unlist(elec_tx_08$FIPS)))
 tx_shape_and_elec_08 = inner_join(tx_shape_map, elec_tx_08, by=&#39;FIPS&#39;)
 
-vis_tx_elec_2008 = ggplot(tx_shape_and_elec_08)+
+ggplot(tx_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2008&#39;)
-vis_tx_elec_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Texas, 2012
 elec_tx_12 = py$elec_tx_2012
 elec_tx_12$FIPS = as.character(as.integer(unlist(elec_tx_12$FIPS)))
 tx_shape_and_elec_12 = inner_join(tx_shape_map, elec_tx_12, by=&#39;FIPS&#39;)
 
-vis_tx_elec_2012 = ggplot(tx_shape_and_elec_12)+
+ggplot(tx_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2012&#39;)
-vis_tx_elec_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Texas, 2016
 elec_tx_16 = py$elec_tx_2016
 elec_tx_16$FIPS = as.character(as.integer(unlist(elec_tx_16$FIPS)))
 tx_shape_and_elec_16 = inner_join(tx_shape_map, elec_tx_16, by=&#39;FIPS&#39;)
 
-vis_tx_elec_2016 = ggplot(tx_shape_and_elec_16)+
+ggplot(tx_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2016&#39;)
-vis_tx_elec_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in TX, 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Pennsylvania, 2008
 elec_pa_08 = py$elec_pa_2008
 pa_shape_and_elec_08 = inner_join(pa_shape_map, elec_pa_08, by=&#39;NAME&#39;)
 
-vis_pa_elec_2008 = ggplot(pa_shape_and_elec_08)+
+ggplot(pa_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2008&#39;)
-vis_pa_elec_2008</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2008&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Pennsylvania, 2012
 elec_pa_12 = py$elec_pa_2012
 pa_shape_and_elec_12 = inner_join(pa_shape_map, elec_pa_12, by=&#39;NAME&#39;)
 
-vis_pa_elec_2012 = ggplot(pa_shape_and_elec_12)+
+ggplot(pa_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2012&#39;)
-vis_pa_elec_2012</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2012&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <pre class="r"><code># visualization - Proportion of the Votes Won By Democrat Candidate in Pennsylvania, 2016
 elec_pa_16 = py$elec_pa_2016
 pa_shape_and_elec_16 = inner_join(pa_shape_map, elec_pa_16, by=&#39;NAME&#39;)
 
-vis_pa_elec_2016 = ggplot(pa_shape_and_elec_16)+
+ggplot(pa_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;blue&quot;, high = &quot;black&quot;, midpoint = 0.5, guide = &quot;legend&quot;)+
-    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2016&#39;)
-vis_pa_elec_2016</code></pre>
-<p><img src="geospatial_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+    labs(title=&#39;Prop of the Votes Won By Democrat Candidate in PA, 2016&#39;)</code></pre>
+<p><img src="geospatial_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 
 
 

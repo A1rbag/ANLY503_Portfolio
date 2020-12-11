@@ -292,6 +292,7 @@ loan2['loan_default'] = loan2['loan_default'].map({0: False, 1:True})
 # plot loan_default with min_balance
 fig = plt.figure(figsize=(10,10))
 g = sns.catplot(x="loan_default", y="min_balance", data=loan2)
+plt.title('Loan Default vs Min Balance')
 plt.show()
 ```
 
@@ -300,6 +301,7 @@ The result is quite straight forward. If the minimum balance of an account is le
 # plot loan_default with min_withdrawal
 fig = plt.figure(figsize=(10,10))
 g = sns.catplot(x="loan_default", y="min_withdrawal", data=loan2)
+plt.title('Loan Default vs Min Withdrawal')
 plt.show()
 ```
 
@@ -325,23 +327,11 @@ tran = data
 data = data.dropna()
 ```
 
-
 ```{r, message=FALSE, warning=FALSE}
 library(plotly)
 tran = py$tran
 data = py$data
 
-# plot
-fig1 <- plot_ly(tran, x = ~date, y = ~balance, color= ~type, type = 'scatter', mode = 'lines')
-
-fig1 <- fig1 %>%  layout(title = 'Time Series Plot of Balance of Diff Types', 
-                       yaxis = list(title = 'Balance'), 
-                       xaxis = list(title = 'date'))
-                       
-fig1
-```
-
-```{r, message=FALSE, warning=FALSE}
 fig2 <- plot_ly(data, x = ~date, y = ~balance, color= ~method, type = 'scatter', mode = 'lines')
 
 fig2 <- fig2 %>%  layout(title = 'Time Series Plot of Balance of Diff Methods', 

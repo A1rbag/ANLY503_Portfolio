@@ -16,14 +16,12 @@ use_python('/Library/Frameworks/Python.framework/Versions/3.7/bin/python3')
 # import packages
 import pandas as pd
 import xlrd
-```
-
-```{python}
 pd.set_option('display.expand_frame_repr', False)
 # election data
 elec = pd.read_csv('countypres_2000-2016.csv')
 elec.head()
 ```
+
 
 ```{python}
 # drop two columns which we do not need - 'office' & 'version'
@@ -36,11 +34,7 @@ elec = elec[elec['year'] != 2004]
 elec = elec[elec['candidate'] != 'Other']
 ```
 
-```{python}
-# check party value counts and data shape
-elec['party'].value_counts()
-elec.shape
-```
+
 ```{python}
 # create a new column to show the proportion of the vote won by either the Democratic or Republican candidate
 elec['voteprop'] = round(elec['candidatevotes'] / elec['totalvotes'], 4)
@@ -66,7 +60,6 @@ elec_pa = elec_pa[elec_pa['party'] == 'democrat']
 null = [elec_tx.isnull().sum().sum(),elec_ca.isnull().sum().sum(),elec_pa.isnull().sum().sum()]
 null
 ```
-
 
 ```{python}
 elec_tx = elec_tx.astype({'FIPS': 'object'})
@@ -152,29 +145,26 @@ ca_shape_map = st_read('CA_Counties/CA_counties_TIGER2016.shp', stringsAsFactors
 ca_uepm = py$uepm_ca
 ca_shape_and_uepm = inner_join(ca_shape_map, ca_uepm, by='NAME')
 
-vis_ca_uepm_2008 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of California in 2008')
-vis_ca_uepm_2008
 ```
 
 ```{r}
 # visualization - Unemployment Rate of California in 2012
-vis_ca_uepm_2012 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of California in 2012')
-vis_ca_uepm_2012
 ```
 
 ```{r}
 # visualization - Unemployment Rate of California in 2016
-vis_ca_uepm_2016 = ggplot(ca_shape_and_uepm)+
+ggplot(ca_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of California in 2016')
-vis_ca_uepm_2016
 ```
 
 ```{r}
@@ -184,28 +174,26 @@ colnames(tx_shape_map) <- c("FID", "CMPTRL_CNT", "CNTY_NM", "DPS_CNTY_N", "FIPSt
 tx_uepm = py$uepm_tx
 tx_shape_and_uepm = inner_join(tx_shape_map, tx_uepm, by='FIPStxt')
 
-vis_tx_uepm_2008 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Texas in 2008')
-vis_tx_uepm_2008
 ```
+
 ```{r}
 # visualization - Unemployment Rate of Texas in 2012
-vis_tx_uepm_2012 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Texas in 2012')
-vis_tx_uepm_2012
 ```
 
 ```{r}
 # visualization - Unemployment Rate of Texas in 2016
-vis_tx_uepm_2016 = ggplot(tx_shape_and_uepm)+
+ggplot(tx_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Texas in 2016')
-vis_tx_uepm_2016
 ```
 
 ```{r}
@@ -214,29 +202,26 @@ pa_shape_map = st_read('PA_Counties_clip.shp/PA_Counties_clip.shp', stringsAsFac
 pa_uepm = py$uepm_pa
 pa_shape_and_uepm = inner_join(pa_shape_map, pa_uepm, by='NAME')
 
-vis_pa_uepm_2008 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2008))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Pennsylvania in 2008')
-vis_pa_uepm_2008
 ```
 
 ```{r}
 # visualization - Unemployment Rate of Pennsylvania in 2012
-vis_pa_uepm_2012 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2012))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Pennsylvania in 2012')
-vis_pa_uepm_2012
 ```
 
 ```{r}
 # visualization - Unemployment Rate of Pennsylvania in 2016
-vis_pa_uepm_2016 = ggplot(pa_shape_and_uepm)+
+ggplot(pa_shape_and_uepm)+
     geom_sf(aes(fill= uepm_rate_2016))+
     scale_fill_gradient(low = '#f2d0df', high = '#a30034')+
     labs(title='Unemployment Rate of Pennsylvania in 2016')
-vis_pa_uepm_2016
 ```
 
 ```{r}
@@ -244,11 +229,10 @@ vis_pa_uepm_2016
 elec_ca_08 = py$elec_ca_2008
 ca_shape_and_elec_08 = inner_join(ca_shape_map, elec_ca_08, by='NAME')
 
-vis_ca_elec_2008 = ggplot(ca_shape_and_elec_08)+
+ggplot(ca_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in CA, 2008')
-vis_ca_elec_2008
 ```
 
 ```{r}
@@ -256,11 +240,10 @@ vis_ca_elec_2008
 elec_ca_12 = py$elec_ca_2012
 ca_shape_and_elec_12 = inner_join(ca_shape_map, elec_ca_12, by='NAME')
 
-vis_ca_elec_2012 = ggplot(ca_shape_and_elec_12)+
+ggplot(ca_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in CA, 2012')
-vis_ca_elec_2012
 ```
 
 
@@ -270,11 +253,10 @@ vis_ca_elec_2012
 elec_ca_16 = py$elec_ca_2016
 ca_shape_and_elec_16 = inner_join(ca_shape_map, elec_ca_16, by='NAME')
 
-vis_ca_elec_2016 = ggplot(ca_shape_and_elec_16)+
+ggplot(ca_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in CA, 2016')
-vis_ca_elec_2016
 ```
 
 
@@ -287,11 +269,10 @@ elec_tx_08 = py$elec_tx_2008
 elec_tx_08$FIPS = as.character(as.integer(unlist(elec_tx_08$FIPS)))
 tx_shape_and_elec_08 = inner_join(tx_shape_map, elec_tx_08, by='FIPS')
 
-vis_tx_elec_2008 = ggplot(tx_shape_and_elec_08)+
+ggplot(tx_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in TX, 2008')
-vis_tx_elec_2008
 ```
 
 ```{r}
@@ -300,11 +281,10 @@ elec_tx_12 = py$elec_tx_2012
 elec_tx_12$FIPS = as.character(as.integer(unlist(elec_tx_12$FIPS)))
 tx_shape_and_elec_12 = inner_join(tx_shape_map, elec_tx_12, by='FIPS')
 
-vis_tx_elec_2012 = ggplot(tx_shape_and_elec_12)+
+ggplot(tx_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in TX, 2012')
-vis_tx_elec_2012
 ```
 
 ```{r}
@@ -313,11 +293,10 @@ elec_tx_16 = py$elec_tx_2016
 elec_tx_16$FIPS = as.character(as.integer(unlist(elec_tx_16$FIPS)))
 tx_shape_and_elec_16 = inner_join(tx_shape_map, elec_tx_16, by='FIPS')
 
-vis_tx_elec_2016 = ggplot(tx_shape_and_elec_16)+
+ggplot(tx_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in TX, 2016')
-vis_tx_elec_2016
 ```
 
 ```{r}
@@ -325,11 +304,10 @@ vis_tx_elec_2016
 elec_pa_08 = py$elec_pa_2008
 pa_shape_and_elec_08 = inner_join(pa_shape_map, elec_pa_08, by='NAME')
 
-vis_pa_elec_2008 = ggplot(pa_shape_and_elec_08)+
+ggplot(pa_shape_and_elec_08)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in PA, 2008')
-vis_pa_elec_2008
 ```
 
 ```{r}
@@ -337,11 +315,10 @@ vis_pa_elec_2008
 elec_pa_12 = py$elec_pa_2012
 pa_shape_and_elec_12 = inner_join(pa_shape_map, elec_pa_12, by='NAME')
 
-vis_pa_elec_2012 = ggplot(pa_shape_and_elec_12)+
+ggplot(pa_shape_and_elec_12)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in PA, 2012')
-vis_pa_elec_2012
 ```
 
 ```{r}
@@ -349,11 +326,10 @@ vis_pa_elec_2012
 elec_pa_16 = py$elec_pa_2016
 pa_shape_and_elec_16 = inner_join(pa_shape_map, elec_pa_16, by='NAME')
 
-vis_pa_elec_2016 = ggplot(pa_shape_and_elec_16)+
+ggplot(pa_shape_and_elec_16)+
     geom_sf(aes(fill= voteprop))+
     scale_fill_gradient2(low = "red", mid = "blue", high = "black", midpoint = 0.5, guide = "legend")+
     labs(title='Prop of the Votes Won By Democrat Candidate in PA, 2016')
-vis_pa_elec_2016
 ```
 
 
